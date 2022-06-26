@@ -1,8 +1,6 @@
 <template>
 <div>
-    <h1>热心市民余先生</h1>
-    <!-- 以及占位符 -->
-    <router-view></router-view>
+    首页
 </div>
 </template>
 
@@ -20,6 +18,6 @@ export default {
 }
 </script>
 
-<style scoped lang='less'>
+<style scoped>
 
 </style>

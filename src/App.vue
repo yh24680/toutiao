@@ -1,6 +1,5 @@
 <template>
 <div>
-    <h1>热心市民余先生</h1>
     <!-- 以及占位符 -->
     <router-view></router-view>
 </div>

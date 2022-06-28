@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-nav-bar title="登录">
+    <van-nav-bar title="登录" @click-left="$router.back()">
       <template #left>
         <van-icon name="cross" />
       </template>
@@ -21,10 +21,10 @@
         <template #left-icon>
           <i class="toutiao toutiao-shouji"></i>
         </template>
+        <!-- <MyIcon name="shouji" slot="left-icon"></MyIcon> -->
       </van-field>
       <van-field
         v-model.trim="code"
-        type="password"
         name="code"
         placeholder="密码"
         :rules="[
@@ -79,6 +79,7 @@ export default {
         const res = await login(values)
         console.log(res)
         this.$store.commit('setUser', res.data.data)
+        this.$router.push({ name: 'my' })
       } catch (err) {
         console.log(err)
       }

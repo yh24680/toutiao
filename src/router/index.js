@@ -16,16 +16,16 @@ const routes = [
     redirect: '/home',
     children: [
       {
-        path: '/home', component: Home
+        path: 'home', component: Home
       },
       {
-        path: '/my', component: My
+        path: 'my', component: My, name: 'my'
       },
       {
-        path: '/video', component: Video
+        path: 'video', component: Video
       },
       {
-        path: '/question', component: Question
+        path: 'question', component: Question
       }
     ]
   },

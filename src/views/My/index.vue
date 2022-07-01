@@ -9,8 +9,9 @@
             fit="cover"
             width="1.72rem"
             height="1.72rem"
-            :src="userInfo.photo"
+            src="@/assets/labixiaoxin.png"
           />
+          <!-- userInfo.photo  用户头像 -->
           <span>热心市民余先生</span>
         </div>
         <div class="right">编辑资料</div>

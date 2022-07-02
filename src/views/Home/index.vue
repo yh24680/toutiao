@@ -3,7 +3,12 @@
     <!-- 搜索框 -->
     <van-nav-bar @click="onSearch">
       <template #title>
-        <van-button type="info" class="search-btn" round icon="search"
+        <van-button
+          type="info"
+          class="search-btn"
+          round
+          icon="search"
+          to="/search"
           >搜索</van-button
         >
       </template>
@@ -43,7 +48,9 @@
 
 <script>
 import ArticleList from '@/components/ArticleList.vue'
-import ChannelPanel from './Components/ChannelPanel.vue'
+// import ChannelPanel from '@/views/Home/Components/ChannelPanel.vue'
+import ChannelPanel from '@/views/Home/Components/ChannelPanel'
+
 import { getMyChannels } from '@/api/home'
 import { getItem, setItem } from '@/utils/storage'
 const CHANNELS = 'CHANNELS'

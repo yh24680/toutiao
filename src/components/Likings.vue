@@ -1,20 +1,19 @@
 <template>
-  <i class="toutiao" :class="'toutiao-' + name"></i>
+  <van-icon name="good-job-o" color @click="onClick" />
 </template>
 
 <script>
 export default {
-  props: {
-    name: {
-      type: String,
-      required: true
-    }
-  },
+  name: 'Likings',
   created () { },
   data () {
     return {}
   },
-  methods: {},
+  methods: {
+    onClick () {
+      console.log('点赞')
+    }
+  },
   computed: {},
   watch: {},
   filters: {},

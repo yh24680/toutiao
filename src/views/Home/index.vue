@@ -77,7 +77,7 @@ export default {
           const res = await getMyChannels()
           // console.log(res)
           this.myHomeList = res.data.data.channels
-          console.log(this.myHomeList)
+          // console.log(this.myHomeList)
         } catch (err) {
           console.log(err)
         }

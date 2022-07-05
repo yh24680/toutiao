@@ -15,7 +15,7 @@
         <!-- 加载完成-文章详情 -->
         <div class="article-detail" v-if="!!article.art_id">
           <!-- 文章标题 -->
-          <h1 class="article-title">这是文章标题</h1>
+          <h1 class="article-title">{{ article.title }}</h1>
           <!-- /文章标题 -->
 
           <!-- 用户信息 -->
@@ -25,11 +25,13 @@
               slot="icon"
               round
               fit="cover"
-              src="https://img.yzcdn.cn/vant/cat.jpeg"
+              :src="article.aut_photo"
             />
-            <div slot="title" class="user-name">黑马头条号</div>
-            <div slot="label" class="publish-date">14小时前</div>
-            <van-button
+            <div slot="title" class="user-name">{{ article.aut_name }}</div>
+            <div slot="label" class="publish-date">
+              {{ article.pubdate | dateformat }}
+            </div>
+            <!-- <van-button
               class="follow-btn"
               type="info"
               color="#3296fa"
@@ -37,7 +39,11 @@
               size="small"
               icon="plus"
               >关注</van-button
-            >
+            > -->
+            <FolloUser
+              v-model="article.is_followed"
+              :target="article.aut_id"
+            ></FolloUser>
             <!-- <van-button
             class="follow-btn"
             round
@@ -47,7 +53,10 @@
           <!-- /用户信息 -->
 
           <!-- 文章内容 -->
-          <div class="article-content">这是文章内容</div>
+          <div
+            class="article-content markdown-body"
+            v-html="article.content"
+          ></div>
           <van-divider>正文结束</van-divider>
         </div>
         <!-- /加载完成-文章详情 -->
@@ -75,16 +84,35 @@
         >写评论</van-button
       >
       <van-icon name="comment-o" badge="123" color="#777" />
-      <van-icon color="#777" name="star-o" />
-      <van-icon color="#777" name="good-job-o" />
-      <van-icon name="share" color="#777777"></van-icon>
+      <!-- <van-icon color="#777" name="star-o" /> -->
+      <CollectArticle
+        :is_collected.sync="article.is_collected"
+      ></CollectArticle>
+      <!-- <van-icon color="#777" name="good-job-o" /> -->
+      <Likings></Likings>
+      <van-icon
+        name="share"
+        color="#777777"
+        @click="showShare = true"
+      ></van-icon>
+    </div>
+    <div>
+      <!-- <van-cell title="显示分享面板" @click="showShare = true" /> -->
+      <van-share-sheet
+        v-model="showShare"
+        title="立即分享给好友"
+        :options="options"
+        @select="onSelect"
+      />
     </div>
     <!-- /底部区域 -->
   </div>
 </template>
 
 <script>
+import 'github-markdown-css'
 import { getArticle } from '@/api/article'
+import { ImagePreview, Toast } from 'vant'
 export default {
   name: 'ArticleIndex',
   components: {},
@@ -98,7 +126,15 @@ export default {
     return {
       isLoading: true,
       article: {},
-      is404Error: false
+      is404Error: false,
+      showShare: false,
+      options: [
+        { name: '微信', icon: 'wechat' },
+        { name: '微博', icon: 'weibo' },
+        { name: '复制链接', icon: 'link' },
+        { name: '分享海报', icon: 'poster' },
+        { name: '二维码', icon: 'qrcode' }
+      ]
     }
   },
   computed: {},
@@ -116,9 +152,29 @@ export default {
       }
     }
     this.isLoading = false
+    this.$nextTick(() => {
+      const arr = document.querySelectorAll('.article-content img')
+      if (arr.length === 0) return
+      const arr1 = []
+      arr.forEach((img, index) => {
+        console.log(img.src)
+        arr1.push(img.src)
+        img.onclick = function () {
+          ImagePreview({
+            images: arr1,
+            startPosition: index
+          })
+        }
+      })
+    })
   },
   mounted () { },
-  methods: {}
+  methods: {
+    onSelect (option) {
+      Toast(option.name)
+      this.showShare = false
+    }
+  }
 }
 </script>
 

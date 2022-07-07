@@ -1,7 +1,12 @@
 <template>
   <div class="article-container">
     <!-- 导航栏 -->
-    <van-nav-bar class="page-nav-bar" left-arrow title="黑马头条"></van-nav-bar>
+    <van-nav-bar
+      class="page-nav-bar"
+      left-arrow
+      title="黑马头条"
+      @click-left="$router.back()"
+    ></van-nav-bar>
     <!-- /导航栏 -->
 
     <div class="main-wrap">
@@ -58,6 +63,16 @@
             v-html="article.content"
           ></div>
           <van-divider>正文结束</van-divider>
+          <ArticleComment
+            :source="article.art_id"
+            type="a"
+            @setCount="count = $event"
+            :commentList="commentList"
+            @replay-show="
+              comment = $event;
+              isReplayShow = true;
+            "
+          ></ArticleComment>
         </div>
         <!-- /加载完成-文章详情 -->
 
@@ -80,10 +95,15 @@
 
     <!-- 底部区域 -->
     <div class="article-bottom" v-if="!isLoading && !!article.art_id">
-      <van-button class="comment-btn" type="default" round size="small"
+      <van-button
+        class="comment-btn"
+        type="default"
+        round
+        size="small"
+        @click="isAddComment = true"
         >写评论</van-button
       >
-      <van-icon name="comment-o" badge="123" color="#777" />
+      <van-icon name="comment-o" :badge="count" color="#777" />
       <!-- <van-icon color="#777" name="star-o" /> -->
       <CollectArticle
         :is_collected.sync="article.is_collected"
@@ -104,18 +124,43 @@
         :options="options"
         @select="onSelect"
       />
+      <van-popup v-model="isAddComment" position="bottom">
+        <AddComment
+          v-if="isAddComment"
+          :target="article_id"
+          @add-comment="
+            commentList.unshift($event);
+            isAddComment = false;
+          "
+        ></AddComment>
+      </van-popup>
     </div>
     <!-- /底部区域 -->
+
+    <!-- 回复弹出层 -->
+    <van-popup
+      v-model="isReplayShow"
+      position="bottom"
+      :style="{ height: '100%' }"
+    >
+      <ReplayComment
+        :comment="comment"
+        @close="isReplayShow = false"
+        v-if="isReplayShow"
+      ></ReplayComment>
+    </van-popup>
   </div>
 </template>
 
 <script>
+import ArticleComment from './components/ArticleComment.vue'
 import 'github-markdown-css'
 import { getArticle } from '@/api/article'
 import { ImagePreview, Toast } from 'vant'
+import AddComment from './components/AddComment.vue'
+import ReplayComment from './components/ReplayComment.vue'
 export default {
   name: 'ArticleIndex',
-  components: {},
   props: {
     article_id: {
       type: [Number, String],
@@ -134,7 +179,12 @@ export default {
         { name: '复制链接', icon: 'link' },
         { name: '分享海报', icon: 'poster' },
         { name: '二维码', icon: 'qrcode' }
-      ]
+      ],
+      count: null, // 评论数量
+      isAddComment: false,
+      commentList: [],
+      isReplayShow: false,
+      comment: {}
     }
   },
   computed: {},
@@ -174,6 +224,11 @@ export default {
       Toast(option.name)
       this.showShare = false
     }
+  },
+  components: {
+    ArticleComment,
+    AddComment,
+    ReplayComment
   }
 }
 </script>
